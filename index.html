@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solución guía 3 - Promesas</title>
+    <script type="text/javascript">
+      function GET(url) {
+        return new Promise(function (resolve, reject) {
+          let ajaxCall = new XMLHttpRequest();
+          ajaxCall.open("GET", url);
+          ajaxCall.onload = function () {
+            /*Cuando se termina de cargar*/
+            if (ajaxCall.status == 200) return resolve(ajaxCall.response);
+            reject(Error(ajaxCall.status));
+          };
+
+          ajaxCall.onerror = function (err) {
+            reject(err);
+          };
+          ajaxCall.send();
+        });
+      }
+
+      function getUserInfo(username) {
+        return GET("http://api.github.com/users/" + username);
+      }
+
+      function getRepos(repos_url) {
+        return GET(repos_url);
+      }
+
+      /*Guardamos en un Json*/
+      getUserInfo("victoriaCJ28")
+        .then((response) => {
+          let jsonResponse = JSON.parse(response);
+          getRepos(jsonResponse.repos_url).then((response) => {
+            console.log(response);
+          });
+        })
+        .catch(console.log);
+    </script>
+  </head>
+  <body></body>
+</html>
